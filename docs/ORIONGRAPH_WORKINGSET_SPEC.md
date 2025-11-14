@@ -360,19 +360,21 @@ On a modest machine:
 
 ## 12. Future Extensions
 
-- **Learned re-ranker** on top of MMR.
-- **Policy integration:**
+> **Note**: The features below are planned for future releases. Current implementation focuses on core MMR selection and multi-channel retrieval. See [../FEATURES.md](../FEATURES.md) for detailed roadmap.
+
+- **Learned re-ranker** on top of MMR (v0.5.0+)
+- **Policy integration** (v0.4.0+)
   - enforce min citations per selected span
   - enforce inclusion of ADRs for "final" tasks
-- **Graph-augmented retrieval:**
+- **Graph-augmented retrieval** (v0.3.0+)
   - incorporate ADR decision graph more heavily
-- **Per-agent personalization:**
+- **Per-agent personalization** (v0.3.0+)
   - episodes as a signal in scoring
 
 ---
 
 ## 13. References
 
-- Implementation: `/Users/agentsy/orion/oriongraph/`
-- ADR: `03_workstreams/ws-orion/99_decisions/ADR-20251113-retrieval-as-compilation.md`
-- Demo: `DEMO.md`
+- **GitHub Repository**: [servesys-labs/oriongraphdb](https://github.com/servesys-labs/oriongraphdb)
+- **Architecture Documentation**: See `docs/ARCHITECTURE_ORIONGRAPH.md`
+- **Implementation**: See `src/` directory for Rust implementation

@@ -1,4 +1,4 @@
-//! HTTP server for AxonGraph context compilation
+//! HTTP server for OrionGraphDB context compilation
 
 use axum::{
     extract::State,
@@ -123,7 +123,7 @@ pub fn create_router(engine: Arc<ContextEngine>) -> Router {
 /// Run the HTTP server
 pub async fn run_server(engine: Arc<ContextEngine>, port: u16) -> anyhow::Result<()> {
     let addr = format!("0.0.0.0:{}", port);
-    info!("Starting AxonGraph server on {}", addr);
+    info!("Starting OrionGraphDB server on {}", addr);
     
     let app = create_router(engine);
     

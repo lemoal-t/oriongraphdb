@@ -1,4 +1,4 @@
-//! AxonGraph - Agent Context Compiler
+//! OrionGraphDB - Agent Context Compiler
 //! 
 //! Implements retrieval-as-compilation for agent working sets with:
 //! - Span-level precision

@@ -1,4 +1,4 @@
-//! AxonGraph HTTP server binary
+//! OrionGraphDB HTTP server binary
 
 use oriongraph::{ContextEngine, MockSemanticGen, HttpSemanticGen, HttpLexicalGen, CandidateSpan};
 use tracing_subscriber;
@@ -16,7 +16,7 @@ async fn main() -> anyhow::Result<()> {
         .with_level(true)
         .init();
     
-    println!("🚀 AxonGraph Context Compiler");
+    println!("🚀 OrionGraphDB Context Compiler");
     println!("   Version: {}", env!("CARGO_PKG_VERSION"));
     println!();
     

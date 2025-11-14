@@ -1,4 +1,4 @@
-//! Core type definitions for AxonGraph context compilation
+//! Core type definitions for OrionGraphDB context compilation
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

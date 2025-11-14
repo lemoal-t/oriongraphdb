@@ -241,6 +241,8 @@ services:
 
 ## Future Extensions
 
+> **Note**: The features below are planned for future releases. See [FEATURES.md](../FEATURES.md) for current implementation status.
+
 - **Embedded mode:** Provide a Rust library / PyO3 bindings to use OrionGraph in-process (no HTTP) for specialized deployments.
 - **Memory DB:** Optional dedicated memory tables + API (`/memory/query`) in addition to Markdown docs.
 - **Multi-tenant OrionGraph:** Isolation via tenant IDs + ACLs so multiple apps/users can share a single OrionGraph instance.

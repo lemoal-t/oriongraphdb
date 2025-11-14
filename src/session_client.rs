@@ -51,7 +51,7 @@ impl SessionClient {
         }
     }
 
-    /// Get recent session context formatted for AxonGraph
+    /// Get recent session context formatted for OrionGraphDB
     pub async fn get_session_context(
         &self,
         session_id: &str,

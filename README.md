@@ -81,6 +81,8 @@ OrionGraphDB uses three channels:
 2. **Lexical**: BM25 for keyword/term matching
 3. **Structural**: Project structure, imports, definitions
 
+> **Implementation Status**: See [FEATURES.md](FEATURES.md) for what's currently implemented vs. planned.
+
 ---
 
 ## 🔧 Architecture
@@ -266,9 +268,9 @@ Apache 2.0 - See [LICENSE](LICENSE)
 
 ## 🔗 Links
 
-- **Homepage**: [orionstack.ai](https://orionstack.ai)
-- **Docs**: [docs.orionstack.ai](https://docs.orionstack.ai)
-- **GitHub**: [github.com/orionstack/oriongraphdb](https://github.com/orionstack/oriongraphdb)
+- **GitHub**: [github.com/servesys-labs/oriongraphdb](https://github.com/servesys-labs/oriongraphdb)
+- **Issues**: [github.com/servesys-labs/oriongraphdb/issues](https://github.com/servesys-labs/oriongraphdb/issues)
+- **Orion Framework**: [github.com/servesys-labs/orion](https://github.com/servesys-labs/orion) (proprietary)
 
 ---
 
