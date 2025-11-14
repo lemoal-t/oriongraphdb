@@ -1,155 +1,244 @@
 # OrionGraphDB Features
 
-**Current Version**: 0.1.0 (Alpha)
+**Current Version**: 0.1.0 (Production-Ready Alpha)
 
 This document clarifies what's currently implemented vs. what's planned for future releases.
 
 ---
 
-## ✅ Currently Implemented (v0.1.0)
+## ✅ Fully Implemented (v0.1.0)
 
-### Core Context Compilation
+### Core Context Compilation Engine
 - ✅ **Multi-channel candidate generation**
-  - Structural generators (mock/HTTP)
-  - Lexical generators with BM25 (HTTP-based)
-  - Semantic generators (mock/HTTP)
+  - `HttpSemanticGen` - Vector search via HTTP service
+  - `HttpLexicalGen` - BM25 search via HTTP service
+  - `MockSemanticGen`, `MockLexicalGen`, `MockStructuralGen` - Testing mocks
+  - Trait-based `CandidateGenerator` for pluggability
+  - Parallel generation with `futures::join_all`
+  
 - ✅ **MMR-based selection** (Maximal Marginal Relevance)
-  - Diversity scoring
-  - Relevance balancing
-  - Token budget constraints
+  - Lambda-weighted diversity vs. relevance tradeoff
+  - Cosine similarity for duplicate detection
+  - Embedding-based diversity scoring
+  - Greedy knapsack selection algorithm
+  
 - ✅ **Token budget management**
-  - Hard budget enforcement
-  - Source diversity constraints
-  - Utilization optimization
+  - Hard budget enforcement (never exceeds limit)
+  - Source diversity constraints (configurable max ratio per source)
+  - Graceful handling when budget exhausted
+  - 85-90% utilization targets
+  - Dynamic budget splitting (session context vs. retrieval)
+
+- ✅ **Multi-channel scoring**
+  - Per-channel normalization (semantic, lexical, structural, graph)
+  - Configurable score weights (`ScoreWeights`)
+  - Recency scoring
+  - Stage boost (prefer specific workstream stages)
+  - Fully weighted base score computation
+
 - ✅ **Span-level precision**
-  - SpanRef with stable identifiers
-  - Character offsets
-  - Token cost tracking
+  - `SpanRef` with stable identifiers
+  - Character-based offsets (`char_start`, `char_end`)
+  - Token cost pre-computation
+  - Document version IDs for immutability
+
+### Session & Memory Integration
+- ✅ **Session-aware context compilation**
+  - `SessionClient` for querying session history
+  - `fetch_session_context()` method
+  - Session spans prepended to workingset (highest priority)
+  - Budget cap for session context (max 50% of total budget)
+  - Automatic trimming when session context exceeds cap
+  
+- ✅ **Memory-aware retrieval**
+  - `MemoryClient` for semantic memory search
+  - `fetch_memory_candidates()` method
+  - Memories participate in MMR selection alongside other candidates
+  - Memory relevance scores integrated into scoring
+  - Category-based tagging and stage assignment
+  - Configurable max memory candidates via env var
 
 ### HTTP Server & API
-- ✅ **REST API** (`/compile_workingset`)
-  - JSON request/response
-  - Async processing (Tokio + Axum)
-  - Health check endpoint
-- ✅ **Pluggable generators**
-  - Trait-based architecture
-  - HTTP-based remote generators
-  - Mock generators for testing
+- ✅ **Production-grade REST API**
+  - `POST /compile_workingset` - Main compilation endpoint
+  - `GET /health` - Health check
+  - Async request handling (Tokio + Axum)
+  - JSON request/response with full error handling
+  - Request filtering (paths, workstreams, age)
+  
+- ✅ **Comprehensive request model**
+  - Intent, session_id, user_id parameters
+  - Hard filters (paths, workstreams, doc age)
+  - Soft preferences (diversity, source ratio, weights)
+  - Explain flag for rationale generation
+
+### Explanations & Observability
+- ✅ **Full explainability**
+  - `SpanExplanation` with per-span rationale
+  - Per-channel score contributions
+  - Diversity penalty tracking
+  - Selection reasons (semantic match, keyword match, structural relevance)
+  - Token utilization statistics
+  - Source distribution reporting
+  - Generation time tracking
+
+### Scoring & Normalization
+- ✅ **Multi-channel score fusion**
+  - Min-max normalization per channel
+  - Weighted combination across channels
+  - Recency scoring based on timestamps
+  - Stage boost for preferred stages
+  - Metadata-aware scoring (workstream, source type)
+
+### Hydration & Text Extraction
+- ✅ **Filesystem-based hydration**
+  - File caching to avoid re-reads
+  - Character-offset-based text extraction
+  - Graceful error handling for missing files
+  - Special handling for session/memory spans (text pre-loaded)
+  - Bounds checking for span offsets
 
 ### Integration Clients
 - ✅ **Python client** (`oriongraph_client.py`)
-  - Simple HTTP wrapper
-  - Working examples
-- ✅ **Session integration client** (Rust)
-  - Query session context
-  - Format for context compilation
-- ✅ **Memory integration client** (Rust)
-  - Query semantic memory
-  - Format for retrieval
+  - `OrionGraphClient` class
+  - `compile_workingset()` method
+  - Working examples in `examples/python-client/`
+  
+- ✅ **Rust integration clients**
+  - `SessionClient` - Query session context via HTTP
+  - `MemoryClient` - Query semantic memory via HTTP
 
 ### Developer Experience
 - ✅ **Quick start** with mock data
 - ✅ **Cargo-based build** system
-- ✅ **Basic test suite**
-- ✅ **Example usage** in Python
+- ✅ **Unit tests** for core algorithms
+- ✅ **Binary packaging** for distribution
+- ✅ **Configurable via CLI flags** (`--use-real`)
 
 ---
 
-## 🚧 Partially Implemented
+## 🔌 Architecture Dependencies
 
-### Scoring & Selection
-- ⚠️ **Multi-channel scoring** - Infrastructure present, but weights hardcoded
-  - TODO: Make weights configurable via request
-  - TODO: Add per-channel score explanations
-- ⚠️ **Explanations** - Basic rationale supported, but not fully detailed
-  - Present: Final scores, selection rank
-  - Missing: Per-channel contribution breakdown
+### External HTTP Services (Expected by Generators)
+- ⚠️ **Semantic search service** - Expected at configurable URL
+  - Called by `HttpSemanticGen`
+  - POST `/search` endpoint with query + filters
+  - Returns candidates with scores + embeddings
+  
+- ⚠️ **BM25 lexical service** - Expected at configurable URL
+  - Called by `HttpLexicalGen`
+  - POST `/search` endpoint with query + filters
+  - Returns candidates with BM25 scores
+  
+- ⚠️ **Session API** - Optional, for session integration
+  - GET `/session/{id}/context` endpoint
+  - Returns recent conversation spans
+  
+- ⚠️ **Memory API** - Optional, for memory integration
+  - GET `/memories?user_id={id}&query={query}` endpoint
+  - Returns relevant long-term memories
 
-### Storage & Indices
-- ⚠️ **In-memory indices** - Current implementation uses runtime data structures
-  - No persistent FAISS/HNSW indices yet
-  - No persistent inverted index yet
-  - Span registry is ephemeral
+> **Note**: OrionGraphDB is the **context compilation engine**. It orchestrates calls to these services but doesn't implement the indices themselves. This follows the "database for AI context" philosophy—indices can be swapped/upgraded without changing the core engine.
 
 ---
 
 ## 📋 Planned (Future Releases)
 
-### v0.2.0 - Persistence
-- 🔲 **Persistent semantic indices**
-  - FAISS index storage
-  - Incremental updates
-  - Versioned embeddings
-- 🔲 **Persistent lexical indices**
-  - Inverted index on disk
-  - BM25 statistics persistence
-- 🔲 **Persistent structural indices**
-  - Document structure cache
-  - Span metadata storage
+### v0.2.0 - Built-in Index Services
+Currently, OrionGraphDB delegates to external HTTP services for semantic/lexical search. Future versions may include:
 
-### v0.3.0 - Advanced Retrieval
+- 🔲 **Bundled semantic search**
+  - Embedded FAISS/HNSW indices
+  - Optional in-process embeddings
+  - Persistent index storage
+  
+- 🔲 **Bundled lexical search**
+  - Embedded inverted index
+  - BM25 scoring implementation
+  - Persistent index files
+
+> **Design Note**: The current architecture (external services) is **intentional** and follows the "database for AI context" philosophy. Indices are pluggable and can be upgraded/replaced without touching the core engine.
+
+### v0.3.0 - Advanced Retrieval Channels
 - 🔲 **Graph-based retrieval**
   - Entity relationship graphs
-  - Citation links
-  - ADR (Architecture Decision Record) graphs
-- 🔲 **Episodic context**
-  - Session history integration
-  - Temporal relevance scoring
-  - User-specific context preferences
+  - Citation link graphs
+  - ADR (Architecture Decision Record) dependency graphs
+  - Graph channel currently reserved but not implemented
 
-### v0.4.0 - Integration & Ecosystem
-- 🔲 **OrionFS integration**
-  - Direct filesystem layout support
-  - Auto-indexing from `01_context/`, `02_knowledge/`, etc.
-  - Front-matter parsing (YAML)
-- 🔲 **Policy engine integration**
-  - OrionFSGuard support
-  - Content governance
+### v0.4.0 - Ecosystem Integration
+- 🔲 **OrionFS filesystem conventions**
+  - Auto-detection of `01_context/`, `02_knowledge/`, etc.
+  - Front-matter parsing (YAML metadata)
+  - Watch mode for auto-indexing
+  
+- 🔲 **Policy engine**
+  - Content governance rules
   - Access control per span
+  - Compliance tracking
 
 ### v0.5.0 - Optimization & Scale
 - 🔲 **Working set compression**
   - Bullet-point summaries
-  - LLM-based summarization
-  - Backref preservation
+  - LLM-based summarization (with backrefs)
+  - Token budget expansion via compression
+  
 - 🔲 **Learned re-ranking**
-  - Fine-tuned model for final selection
-  - User feedback loop
+  - Fine-tuned model for final MMR selection
+  - User feedback loop integration
   - A/B testing infrastructure
-- 🔲 **Multi-tenant support**
-  - Tenant isolation
-  - Per-tenant indices
-  - Resource quotas
 
 ### Long-term Roadmap
-- 🔲 **Embedded mode** (in-process library)
-- 🔲 **Incremental indexing** (watch filesystem)
+- 🔲 **Embedded mode** (in-process library via PyO3)
+- 🔲 **Multi-tenant support** (isolation, quotas)
 - 🔲 **Distributed deployment** (sharding, replication)
-- 🔲 **Advanced analytics** (query performance, utilization stats)
-- 🔲 **Client libraries** (Node.js, Go, Rust native)
+- 🔲 **Advanced analytics** (query perf, A/B testing)
+- 🔲 **Additional client libraries** (Node.js, Go)
 
 ---
 
-## 🔍 Architecture Notes
+## 🔍 Architecture Philosophy
 
 ### What OrionGraphDB IS
-- A **context compilation engine** for AI agents
-- A **retrieval system** optimized for LLM prompts
-- A **standalone service** with HTTP API
+- ✅ A **context compilation engine** for AI agents
+- ✅ A **retrieval orchestration** system optimized for LLM prompts
+- ✅ A **standalone microservice** with HTTP API
+- ✅ A **multi-channel fusion** layer (semantic + lexical + structural + memory + session)
+- ✅ An **explainable retrieval** system with full rationale
 
-### What OrionGraphDB IS NOT (Yet)
-- Not a full document database (no CRUD on documents)
-- Not a vector database (uses external embedding services)
-- Not a general-purpose search engine (specialized for agent context)
-- Not a filesystem manager (works with existing files)
+### What OrionGraphDB IS NOT
+- ❌ Not a vector database (orchestrates external embedding services)
+- ❌ Not an inverted index (orchestrates external BM25 services)
+- ❌ Not a document store (reads from filesystem)
+- ❌ Not a general-purpose search engine (specialized for agent context compilation)
 
 ### Design Philosophy
-OrionGraphDB follows the **"Database for AI Context"** philosophy:
+OrionGraphDB follows the **"Postgres for AI Context"** philosophy:
+
 1. **Query-like interface** - One main operation: `compile_workingset`
-2. **Budget-aware** - Always respects token limits
-3. **Explainable** - Every selection has a rationale
-4. **Diverse** - Avoids over-reliance on single sources
-5. **Fast** - Sub-200ms for typical queries
+2. **Budget-aware** - Always respects token limits (hard constraints)
+3. **Explainable** - Every selection includes rationale
+4. **Diverse** - MMR ensures variety, avoids over-reliance on single sources
+5. **Composable** - Fuses multiple retrieval channels (semantic, lexical, session, memory)
+6. **Fast** - Target <200ms for typical queries
+7. **Pluggable** - Indices are external services, easily swapped/upgraded
+
+### Why External Index Services?
+The architecture deliberately **delegates** indexing to external HTTP services:
+
+**Benefits:**
+- 🔄 Upgrade indices without touching core engine
+- 🔌 Swap semantic models (e.g., OpenAI → Cohere → local)
+- 🎯 Different services for different projects
+- 📊 Scale indices independently of compilation engine
+- 🧪 A/B test different retrieval strategies
+
+**Trade-offs:**
+- Requires external services to be running
+- Network latency (mitigated by async + parallel calls)
+- More operational complexity
+
+> **For Production**: Deploy semantic/lexical services alongside OrionGraphDB. For development, use mock generators.
 
 ---
 
