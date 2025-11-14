@@ -32,7 +32,7 @@ Think of OrionGraphDB as **"Postgres for AI Context"**:
 ```bash
 # Build and run
 cargo build --release
-./target/release/axongraph-server
+./target/release/oriongraph-server
 
 # Server runs at http://localhost:8081
 ```
@@ -40,9 +40,9 @@ cargo build --release
 ### Use the Python Client
 
 ```python
-from axongraph_client import AxonGraphClient
+from oriongraph_client import OrionGraphClient
 
-client = AxonGraphClient("http://localhost:8081")
+client = OrionGraphClient("http://localhost:8081")
 
 # Compile optimal context
 result = client.compile_workingset(
@@ -161,18 +161,18 @@ Check server health.
 See [`examples/python-client/`](examples/python-client/) for a full Python client.
 
 ```python
-from axongraph_client import AxonGraphClient
-client = AxonGraphClient()
+from oriongraph_client import OrionGraphClient
+client = OrionGraphClient()
 result = client.compile_workingset(intent="...", budget_tokens=6000)
 ```
 
 ### LangChain
 
 ```python
-from axongraph_client import AxonGraphClient
+from oriongraph_client import OrionGraphClient
 
 def get_context(query: str) -> str:
-    client = AxonGraphClient()
+    client = OrionGraphClient()
     result = client.compile_workingset(intent=query, budget_tokens=4000)
     return "\n\n".join(span["text"] for span in result["workingset"]["spans"])
 ```

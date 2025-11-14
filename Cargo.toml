@@ -1,5 +1,5 @@
 [package]
-name = "axongraph"
+name = "oriongraph"
 version = "0.1.0"
 edition = "2021"
 
@@ -21,6 +21,6 @@ urlencoding = "2"
 tokio-test = "0.4"
 
 [[bin]]
-name = "axongraph-server"
-path = "src/bin/axongraph-server.rs"
+name = "oriongraph-server"
+path = "src/bin/oriongraph-server.rs"
 

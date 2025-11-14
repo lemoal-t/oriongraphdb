@@ -107,7 +107,7 @@ async fn compile_handler(
 async fn health_handler() -> Json<HealthResponse> {
     Json(HealthResponse {
         status: "healthy".to_string(),
-        service: "axongraph".to_string(),
+        service: "oriongraph".to_string(),
         version: env!("CARGO_PKG_VERSION").to_string(),
     })
 }

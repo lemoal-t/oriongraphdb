@@ -1,6 +1,6 @@
-# AxonGraph & Orion – Architecture Overview
+# OrionGraph & Orion – Architecture Overview
 
-This document defines the relationship between **AxonGraph** and **Orion**, and how they work together as a full stack for agentic systems.
+This document defines the relationship between **OrionGraph** and **Orion**, and how they work together as a full stack for agentic systems.
 
 ---
 
@@ -8,7 +8,7 @@ This document defines the relationship between **AxonGraph** and **Orion**, and 
 
 We treat:
 
-- **AxonGraph** as a **database-like engine** for context:
+- **OrionGraph** as a **database-like engine** for context:
   - It indexes content (OrionFS, memories, etc.)
   - It serves query-like requests (`compile_workingset`)
   - It returns optimized "working sets" of spans for agents
@@ -16,17 +16,17 @@ We treat:
 - **Orion** as an **agentic framework** (like LangChain/DeepAgents + CLI):
   - It manages sessions, tools, agents, workflows
   - It handles REPL / CLI UX
-  - It orchestrates calls to AxonGraph and LLMs
+  - It orchestrates calls to OrionGraph and LLMs
 
 Analogy:
 
-- `AxonGraph : Orion :: Postgres : Django`
+- `OrionGraph : Orion :: Postgres : Django`
 
 ---
 
 ## Components
 
-### 1. AxonGraph (Context Database)
+### 1. OrionGraph (Context Database)
 
 **Role:** Provide high-quality, budget-aware context for agents.
 
@@ -69,13 +69,13 @@ Analogy:
   - `indices/lexical.json`
   - `indices/structural.json`
   - Mappings to OrionFS docs
-- AxonGraph itself is logically a DB, but it does not own a single `.db` file.
+- OrionGraph itself is logically a DB, but it does not own a single `.db` file.
 
 ---
 
 ### 2. Orion (Agentic Framework)
 
-**Role:** Orchestrate agents, sessions, tools, and workflows using AxonGraph as the context DB.
+**Role:** Orchestrate agents, sessions, tools, and workflows using OrionGraph as the context DB.
 
 **Responsibilities:**
 
@@ -114,13 +114,13 @@ Analogy:
 
 We have three logical "planes" of state:
 
-### 1. Context Plane (AxonGraph)
+### 1. Context Plane (OrionGraph)
 
 - **What:** Knowledge & content used to build prompts.
 - **Where:**
   - OrionFS markdown files (checked into git)
   - Index files under `indices/`
-- **Owner:** AxonGraph (for indexing + retrieval).
+- **Owner:** OrionGraph (for indexing + retrieval).
 
 ### 2. Session Plane (Session DB)
 
@@ -136,8 +136,8 @@ We have three logical "planes" of state:
   - Markdown files, e.g.:
     - `02_knowledge/memory/user-<id>.md`
     - `02_knowledge/memory/workstream-<id>.md`
-  - These get indexed by AxonGraph like any other doc.
-- **Owner:** Orion (ETL writes them; AxonGraph indexes & serves them).
+  - These get indexed by OrionGraph like any other doc.
+- **Owner:** Orion (ETL writes them; OrionGraph indexes & serves them).
 
 Later, memories can also be reflected into a `memories` table in SQLite/Postgres.
 
@@ -152,12 +152,12 @@ For local dev, we aim for a 1-command setup and minimal mental overhead.
 ```
 ~/.orion/
 ├── sessions.db         # SQLite: sessions/events/state
-├── indices/            # AxonGraph indices
+├── indices/            # OrionGraph indices
 │   ├── semantic.faiss
 │   ├── lexical.json
 │   └── structural.json
 ├── memory/             # Optional memory docs (if not in repo)
-└── config.toml         # Orion + AxonGraph config
+└── config.toml         # Orion + OrionGraph config
 ```
 
 **Workflow:**
@@ -173,29 +173,29 @@ orion init
 # - (Optional) build initial indices
 
 orion chat
-# - Ensure axongraph-server is running (auto-start if needed)
+# - Ensure oriongraph-server is running (auto-start if needed)
 # - Use sessions.db for events/state
 # - Use indices/ + OrionFS for context
 # - Use memory docs as part of context
 ```
 
-**AxonGraph in local dev:**
+**OrionGraph in local dev:**
 
 - Runs as a local HTTP service, started by the Orion CLI if not already running.
 - Reads indices from `~/.orion/indices/` (or a configured path).
-- Orion uses a thin client (`AxonGraphClient`) to talk to it.
+- Orion uses a thin client (`OrionGraphClient`) to talk to it.
 
 ---
 
 ## Production Story (Future)
 
-In a more "deployed" setting, AxonGraph and Orion can be split:
+In a more "deployed" setting, OrionGraph and Orion can be split:
 
 ```yaml
 # docker-compose.yml (example)
 services:
-  axongraph:
-    image: axongraph/axongraph:latest
+  oriongraph:
+    image: oriongraph/oriongraph:latest
     volumes:
       - ./indices:/data/indices
     ports:
@@ -204,19 +204,19 @@ services:
   orion-api:
     image: orion/orion:latest
     environment:
-      AXONGRAPH_URL: http://axongraph:8080
+      ORIONGRAPH_URL: http://oriongraph:8080
     volumes:
       - ./data:/data           # sessions, memory docs, configs
 ```
 
-- AxonGraph becomes a database-like service other apps can share.
+- OrionGraph becomes a database-like service other apps can share.
 - Orion is one of potentially many clients.
 
 ---
 
 ## Responsibilities & Boundaries
 
-**AxonGraph:**
+**OrionGraph:**
 
 - **Owns:**
   - Indexing
@@ -235,15 +235,15 @@ services:
   - Agent lifecycle and tools
   - Policy enforcement on writes
 - **Delegates:**
-  - Context construction to AxonGraph (`compile_workingset`)
+  - Context construction to OrionGraph (`compile_workingset`)
 
 ---
 
 ## Future Extensions
 
-- **Embedded mode:** Provide a Rust library / PyO3 bindings to use AxonGraph in-process (no HTTP) for specialized deployments.
+- **Embedded mode:** Provide a Rust library / PyO3 bindings to use OrionGraph in-process (no HTTP) for specialized deployments.
 - **Memory DB:** Optional dedicated memory tables + API (`/memory/query`) in addition to Markdown docs.
-- **Multi-tenant AxonGraph:** Isolation via tenant IDs + ACLs so multiple apps/users can share a single AxonGraph instance.
+- **Multi-tenant OrionGraph:** Isolation via tenant IDs + ACLs so multiple apps/users can share a single OrionGraph instance.
 - **Advanced policy engine:** YAML → WASM policy compilation for more complex governance.
 
 ---

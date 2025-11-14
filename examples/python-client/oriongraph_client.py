@@ -1,22 +1,22 @@
 """
-AxonGraph Python Client
+OrionGraph Python Client
 
-Simple HTTP client for calling the AxonGraph context compilation service.
+Simple HTTP client for calling the OrionGraph context compilation service.
 """
 
 import httpx
 from typing import Optional, Dict, Any
 
 
-class AxonGraphClient:
-    """Client for AxonGraph context compilation service."""
+class OrionGraphClient:
+    """Client for OrionGraph context compilation service."""
     
     def __init__(self, base_url: Optional[str] = None):
         """
         Initialize client.
         
         Args:
-            base_url: Base URL of AxonGraph server. If None, loads from config.
+            base_url: Base URL of OrionGraph server. If None, loads from config.
         """
         if base_url is None:
             try:
@@ -105,7 +105,7 @@ class AxonGraphClient:
 
 # Example usage
 if __name__ == "__main__":
-    client = AxonGraphClient()
+    client = OrionGraphClient()
     
     # Check health
     print("Health check:", client.health())

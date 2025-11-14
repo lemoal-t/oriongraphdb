@@ -1,11 +1,11 @@
 //! AxonGraph HTTP server binary
 
-use axongraph::{ContextEngine, MockSemanticGen, HttpSemanticGen, HttpLexicalGen, CandidateSpan};
+use oriongraph::{ContextEngine, MockSemanticGen, HttpSemanticGen, HttpLexicalGen, CandidateSpan};
 use tracing_subscriber;
 use std::sync::Arc;
 
 mod server {
-    pub use axongraph::server::*;
+    pub use oriongraph::server::*;
 }
 
 #[tokio::main]
@@ -112,7 +112,7 @@ async fn main() -> anyhow::Result<()> {
 
 /// Create mock candidates for evaluation with real OrionFS content
 fn create_mock_candidates() -> Vec<CandidateSpan> {
-    use axongraph::*;
+    use oriongraph::*;
     use std::time::SystemTime;
     
     let now = SystemTime::now()

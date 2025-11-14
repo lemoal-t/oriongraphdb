@@ -6,12 +6,12 @@ This example shows how to use the OrionGraphDB HTTP API to compile
 optimal context for AI agents.
 """
 
-from axongraph_client import AxonGraphClient
+from oriongraph_client import OrionGraphClient
 
 
 def main():
     # Initialize client
-    client = AxonGraphClient("http://localhost:8081")
+    client = OrionGraphClient("http://localhost:8081")
     
     # Check server health
     print("🔍 Checking OrionGraphDB server...")

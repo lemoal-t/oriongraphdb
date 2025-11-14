@@ -1,14 +1,14 @@
-# AxonGraph Working Set Compiler Specification
+# OrionGraph Working Set Compiler Specification
 
 **Component:** `compile_workingset()`  
-**Context:** OrionFS + AxonGraph, agent-first context infrastructure  
+**Context:** OrionFS + OrionGraph, agent-first context infrastructure  
 **Status:** Draft v1 (MVP-ready)
 
 ---
 
 ## Quick Reference
 
-**What is this?** AxonGraph's Working Set Compiler transforms an agent's intent into an optimized context bundle. Instead of naive "top-k vector search," it runs retrieval-as-compilation: multi-channel candidate generation → scoring → MMR-based diversity selection → budget-constrained optimization. The result is a provenance-backed, explainable set of document spans that fit within token limits while maximizing relevance and source diversity.
+**What is this?** OrionGraph's Working Set Compiler transforms an agent's intent into an optimized context bundle. Instead of naive "top-k vector search," it runs retrieval-as-compilation: multi-channel candidate generation → scoring → MMR-based diversity selection → budget-constrained optimization. The result is a provenance-backed, explainable set of document spans that fit within token limits while maximizing relevance and source diversity.
 
 ---
 
@@ -35,14 +35,14 @@ This replaces naive "top-k vector search" with **retrieval-as-compilation**.
 
 ## 2. High-Level Architecture
 
-AxonGraph sits on top of **OrionFS**:
+OrionGraph sits on top of **OrionFS**:
 
 - **OrionFS** = filesystem-first project layout
 
   - Files under `01_context/`, `02_knowledge/`, `03_workstreams/`, `04_artifacts/`
   - Deterministic paths + YAML front matter
 
-- **AxonGraph** = index + brain, over OrionFS:
+- **OrionGraph** = index + brain, over OrionFS:
   - Span registry
   - Structural index
   - Lexical index
@@ -373,6 +373,6 @@ On a modest machine:
 
 ## 13. References
 
-- Implementation: `/Users/agentsy/orion/axongraph/`
+- Implementation: `/Users/agentsy/orion/oriongraph/`
 - ADR: `03_workstreams/ws-orion/99_decisions/ADR-20251113-retrieval-as-compilation.md`
 - Demo: `DEMO.md`
